@@ -1,0 +1,19 @@
+/*
+ * Automatically generated C config: don't edit
+ * Dist builder
+ * Wed Jul 27 14:33:04 2022
+ */
+#define AUTOCONF_INCLUDED
+#define CONFIG_DISTVERSION "5.0"
+#define CONFIG_DEFAULTS_KERNEL_LINUX 1
+#define CONFIG_DEFAULTS_KERNEL 1
+#define CONFIG_DEFAULTS_YDDRAIG_DDRAIG68K 1
+#define CONFIG_DEFAULTS_VENDOR_UPDATE 1
+#define CONFIG_DEFAULTS_YDDRAIG 1
+#define CONFIG_DEFAULTS_LIBC_UCLIBC 1
+#define CONFIG_VENDOR "YDdraig"
+#define CONFIG_PRODUCT "ddraig68k"
+#define CONFIG_LINUXDIR "linux"
+#define CONFIG_LIBCDIR "uClibc"
+#define VENDORS_AUTOCONF_INCLUDED
+#undef AUTOCONF_INCLUDED

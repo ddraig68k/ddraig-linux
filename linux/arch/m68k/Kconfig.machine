@@ -156,6 +156,12 @@ config UCSIMM
 	help
 	  Support for the Arcturus Networks uCsimm module.
 
+config DDRAIG68K
+	bool "Y Ddraig 68000 support"
+	depends on M68EZ328
+	help
+	  Support for the Y Ddraig 68000 computer.
+
 config UCDIMM
 	bool "uDsimm module support"
 	depends on M68VZ328

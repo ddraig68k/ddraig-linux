@@ -62,10 +62,10 @@ else
 ARCH          = m68knommu
 endif
 ENDIAN        = big
-ifneq ($(shell which m68k-uclinux-20060615-gcc),)
-CROSS_COMPILE = m68k-uclinux-20060615-
+ifneq ($(shell which m68k-elf-20060615-gcc),)
+CROSS_COMPILE = m68k-elf-20060615-
 else
-CROSS_COMPILE = m68k-uclinux-
+CROSS_COMPILE = m68k-elf-
 endif
 CROSS         = $(CROSS_COMPILE)
 CONFIGURE_HOST = m68k-elf

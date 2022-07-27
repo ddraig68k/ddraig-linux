@@ -55,6 +55,66 @@
 #include "console_cmdline.h"
 #include "braille.h"
 
+#define DUART_BASE      0x00F7F000       // Base address of the Dual Asynchronous Receiver Transmitter
+
+#define	DUART_MR1A      *((volatile uint8_t *) (DUART_BASE + 0x00))     // Mode Register A
+#define DUART_MR2A      *((volatile uint8_t *) (DUART_BASE + 0x00))     // Mode Register A
+#define DUART_SRA       *((volatile uint8_t *) (DUART_BASE + 0x02))     // Status Register A
+#define DUART_CSRA      *((volatile uint8_t *) (DUART_BASE + 0x02))     // Clock-Select Register A
+#define DUART_CRA       *((volatile uint8_t *) (DUART_BASE + 0x04))     // Command Register A
+#define DUART_RBA       *((volatile uint8_t *) (DUART_BASE + 0x06))     // Receive Buffer A
+#define DUART_TBA       *((volatile uint8_t *) (DUART_BASE + 0x06))     // Transmit Buffer A
+#define DUART_IPCR      *((volatile uint8_t *) (DUART_BASE + 0x08))     // Input Port Change Register
+#define DUART_ACR       *((volatile uint8_t *) (DUART_BASE + 0x08))     // Auxiliary Control Register
+#define DUART_ISR       *((volatile uint8_t *) (DUART_BASE + 0x0A))     // Interrupt Status Register
+#define DUART_IMR       *((volatile uint8_t *) (DUART_BASE + 0x0A))     // Interrupt Mask Register
+#define DUART_CUR       *((volatile uint8_t *) (DUART_BASE + 0x0C))     // Counter Mode: current MSB
+#define DUART_CTUR      *((volatile uint8_t *) (DUART_BASE + 0x0C))     // Counter/Timer upper reg
+#define DUART_CLR       *((volatile uint8_t *) (DUART_BASE + 0x0E))     // Counter Mode: current LSB
+#define DUART_CTLR      *((volatile uint8_t *) (DUART_BASE + 0x0E))     // Counter/Timer lower reg
+#define DUART_MR1B      *((volatile uint8_t *) (DUART_BASE + 0x10))     // Mode Register B
+#define DUART_MR2B      *((volatile uint8_t *) (DUART_BASE + 0x10))     // Mode Register B
+#define DUART_SRB       *((volatile uint8_t *) (DUART_BASE + 0x12))     // Status Register B
+#define DUART_CSRB      *((volatile uint8_t *) (DUART_BASE + 0x12))     // Clock-Select Register B
+#define DUART_CRB       *((volatile uint8_t *) (DUART_BASE + 0x14))     // Command Register B
+#define DUART_RBB       *((volatile uint8_t *) (DUART_BASE + 0x16))     // Receive Buffer B
+#define DUART_TBB       *((volatile uint8_t *) (DUART_BASE + 0x16))     // Transmit Buffer A
+#define DUART_IVR       *((volatile uint8_t *) (DUART_BASE + 0x18))     // Interrupt Vector Register
+#define DUART_IP        *((volatile uint8_t *) (DUART_BASE + 0x1A))     // Input Port
+#define DUART_OPCR      *((volatile uint8_t *) (DUART_BASE + 0x1A))     // Output Port Configuration Reg.
+#define DUART_STRTCC    *((volatile uint8_t *) (DUART_BASE + 0x1C))     // Start-Counter command
+#define DUART_OPRSET    *((volatile uint8_t *) (DUART_BASE + 0x1C))     // Output Port Reg,SET bits
+#define DUART_STOPCC    *((volatile uint8_t *) (DUART_BASE + 0x1E))     // Stop-Counter command
+#define DUART_OPRRST    *((volatile uint8_t *) (DUART_BASE + 0x1E))     // Output Port Reg,ReSeT bits
+
+#define RxRDY		    0x01
+#define TxRDY		    0x04
+
+void duart_putc(char c)
+{
+	volatile char status;
+
+	status = DUART_SRA;
+	while ((status & TxRDY) != TxRDY)
+	{
+		// Wait until the transmit buffer is empty
+		status = DUART_SRA;
+	}
+
+	DUART_TBA = c;
+}
+
+void duart_puts(const char *s)
+{
+    unsigned i = 0;
+
+    while (s[i] != 0)
+    {
+        duart_putc(s[i]);
+        i++;
+    }
+}
+
 int console_printk[4] = {
 	CONSOLE_LOGLEVEL_DEFAULT,	/* console_loglevel */
 	MESSAGE_LOGLEVEL_DEFAULT,	/* default_message_loglevel */
@@ -1898,6 +1958,26 @@ DEFINE_PER_CPU(printk_func_t, printk_func) = vprintk_default;
  */
 asmlinkage __visible int printk(const char *fmt, ...)
 {
+	va_list ap;
+	char buf[512];
+	int n = 0;
+	int i = 0;
+
+	va_start(ap, fmt);
+	n = vscnprintf(buf, sizeof(buf), fmt, ap);
+	va_end(ap);
+
+    while (buf[i] != 0 && i < n)
+    {
+        duart_putc(buf[i]);
+        i++;
+    }
+
+	return n;
+}
+
+asmlinkage __visible int printk_old(const char *fmt, ...)
+{
 	printk_func_t vprintk_func;
 	va_list args;
 	int r;
@@ -1917,6 +1997,7 @@ asmlinkage __visible int printk(const char *fmt, ...)
 
 	return r;
 }
+
 EXPORT_SYMBOL(printk);
 
 #else /* CONFIG_PRINTK */

@@ -1,0 +1,856 @@
+mainmenu "Embedded Linux Configuration"
+
+config DISTVERSION
+	string
+	default 5.0
+
+menu "Vendor/Product Selection"
+
+comment "Select the Vendor you wish to target"
+
+choice
+	prompt "Vendor"
+	default DEFAULTS_ACCELERATEDCONCEPTS
+
+config DEFAULTS_3COM
+  bool "3com"
+
+config DEFAULTS_ACCELERATEDCONCEPTS
+  bool "AcceleratedConcepts"
+
+config DEFAULTS_ADI
+  bool "ADI"
+
+config DEFAULTS_ALFA
+  bool "Alfa"
+
+config DEFAULTS_AMIGA
+  bool "Amiga"
+
+config DEFAULTS_ARCTURUS
+  bool "Arcturus"
+
+config DEFAULTS_ARM
+  bool "ARM"
+
+config DEFAULTS_ARNEWSH
+  bool "Arnewsh"
+
+config DEFAULTS_ATARI
+  bool "Atari"
+
+config DEFAULTS_ATHEROS
+  bool "Atheros"
+
+config DEFAULTS_ATMEL
+  bool "Atmel"
+
+config DEFAULTS_AVNET
+  bool "Avnet"
+
+config DEFAULTS_EMAC
+  bool "EMAC"
+
+config DEFAULTS_EXYS
+  bool "Exys"
+
+config DEFAULTS_FEITH
+  bool "Feith"
+
+config DEFAULTS_FIREBEE
+  bool "FireBee"
+
+config DEFAULTS_FREESCALE
+  bool "Freescale"
+
+config DEFAULTS_GLOBALSCALE
+  bool "Globalscale"
+
+config DEFAULTS_INTEC
+  bool "Intec"
+
+config DEFAULTS_INTEL
+  bool "Intel"
+
+config DEFAULTS_MCAFEE
+  bool "McAfee"
+
+config DEFAULTS_MICREL
+  bool "Micrel"
+
+config DEFAULTS_NETBURNER
+  bool "Netburner"
+
+config DEFAULTS_OPENGEAR
+  bool "OpenGear"
+
+config DEFAULTS_SECURECOMPUTING
+  bool "SecureComputing"
+
+config DEFAULTS_SENTEC
+  bool "senTec"
+
+config DEFAULTS_SERRA
+  bool "Serra"
+
+config DEFAULTS_SIGNAL
+  bool "Signal"
+
+config DEFAULTS_SNEHA
+  bool "SNEHA"
+
+config DEFAULTS_SOEKRIS
+  bool "Soekris"
+
+config DEFAULTS_TI
+  bool "TI"
+
+config DEFAULTS_YDDRAIG
+  bool "YDdraig"
+
+endchoice
+
+config VENDOR
+	string
+
+##############################################################
+
+comment "Select the Product you wish to target"
+
+##############################################################
+
+choice
+	prompt "3com Products"
+	depends on DEFAULTS_3COM
+	default DEFAULTS_3COM_XCOPILOT
+
+config DEFAULTS_3COM_XCOPILOT
+	bool "Xcopilot"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "AcceleratedConcepts Products"
+	depends on DEFAULTS_ACCELERATEDCONCEPTS
+	default DEFAULTS_ACCELERATEDCONCEPTS_5300_DC
+
+config DEFAULTS_ACCELERATEDCONCEPTS_5300_DC
+	bool "5300-DC"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_5301_DC
+	bool "5301-DC"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_5400_LX
+	bool "5400-LX"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_5400_RM
+	bool "5400-RM"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_6200_FX
+	bool "6200-FX"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_6300_CX
+	bool "6300-CX"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_6300_DX
+	bool "6300-DX"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_6300_EX
+	bool "6300-EX"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_6300_LX
+	bool "6300-LX"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_6350_SR
+	bool "6350-SR"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_8200
+	bool "8200"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_8200_KBOOT
+	bool "8200-kboot"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_8300
+	bool "8300"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_9400_UA
+	bool "9400-UA"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_NETREACH
+	bool "NetReach"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_X86
+	bool "X86"
+
+config DEFAULTS_ACCELERATEDCONCEPTS_X86_64
+	bool "X86_64"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "ADI Products"
+	depends on DEFAULTS_ADI
+	default DEFAULTS_ADI_COYOTE
+
+config DEFAULTS_ADI_COYOTE
+	bool "Coyote"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Alfa Products"
+	depends on DEFAULTS_ALFA
+	default DEFAULTS_ALFA_HORNET_UB
+
+config DEFAULTS_ALFA_HORNET_UB
+	bool "Hornet-UB"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Amiga Products"
+	depends on DEFAULTS_AMIGA
+	default DEFAULTS_AMIGA_AMIGA
+
+config DEFAULTS_AMIGA_AMIGA
+	bool "Amiga"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Arcturus Products"
+	depends on DEFAULTS_ARCTURUS
+	default DEFAULTS_ARCTURUS_UC5272
+
+config DEFAULTS_ARCTURUS_UC5272
+	bool "uC5272"
+
+config DEFAULTS_ARCTURUS_UC5272_4EE32U66
+	bool "uC5272-4EE32U66"
+
+config DEFAULTS_ARCTURUS_UC5272_8EE32U66
+	bool "uC5272-8EE32U66"
+
+config DEFAULTS_ARCTURUS_UC5272_XEE16U48
+	bool "uC5272-xEE16U48"
+
+config DEFAULTS_ARCTURUS_UC5272_XEE16U66
+	bool "uC5272-xEE16U66"
+
+config DEFAULTS_ARCTURUS_UC5272_XEE8U48
+	bool "uC5272-xEE8U48"
+
+config DEFAULTS_ARCTURUS_UC5272_XEE8U66
+	bool "uC5272-xEE8U66"
+
+config DEFAULTS_ARCTURUS_UC5275_16E32U150
+	bool "uC5275-16E32U150"
+
+config DEFAULTS_ARCTURUS_UC5282_XE16C64
+	bool "uC5282-xE16C64"
+
+config DEFAULTS_ARCTURUS_UC5282_XE16C80
+	bool "uC5282-xE16C80"
+
+config DEFAULTS_ARCTURUS_UC532X
+	bool "uC532x"
+
+config DEFAULTS_ARCTURUS_UCDIMM
+	bool "uCdimm"
+
+config DEFAULTS_ARCTURUS_UCDIMM_MTD
+	bool "uCdimm+mtd"
+
+config DEFAULTS_ARCTURUS_UCQUICC
+	bool "uCquicc"
+
+config DEFAULTS_ARCTURUS_UCSIMM
+	bool "uCsimm"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "ARM Products"
+	depends on DEFAULTS_ARM
+	default DEFAULTS_ARM_INTEGRATOR_CP
+
+config DEFAULTS_ARM_INTEGRATOR_CP
+	bool "Integrator-CP"
+
+config DEFAULTS_ARM_VERSATILE_PB
+	bool "Versatile-PB"
+
+config DEFAULTS_ARM_VERSATILE_PB_NOMMU
+	bool "Versatile-PB-noMMU"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Arnewsh Products"
+	depends on DEFAULTS_ARNEWSH
+	default DEFAULTS_ARNEWSH_M5206
+
+config DEFAULTS_ARNEWSH_M5206
+	bool "M5206"
+
+config DEFAULTS_ARNEWSH_M5307
+	bool "M5307"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Atari Products"
+	depends on DEFAULTS_ATARI
+	default DEFAULTS_ATARI_ATARI
+
+config DEFAULTS_ATARI_ATARI
+	bool "Atari"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Atheros Products"
+	depends on DEFAULTS_ATHEROS
+	default DEFAULTS_ATHEROS_PB42
+
+config DEFAULTS_ATHEROS_PB42
+	bool "PB42"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Atmel Products"
+	depends on DEFAULTS_ATMEL
+	default DEFAULTS_ATMEL_AT91SAMA5D3
+
+config DEFAULTS_ATMEL_AT91SAMA5D3
+	bool "at91sama5d3"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Avnet Products"
+	depends on DEFAULTS_AVNET
+	default DEFAULTS_AVNET_AVNET5282
+
+config DEFAULTS_AVNET_AVNET5282
+	bool "AVNET5282"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "EMAC Products"
+	depends on DEFAULTS_EMAC
+	default DEFAULTS_EMAC_SOM5282EM
+
+config DEFAULTS_EMAC_SOM5282EM
+	bool "SOM5282EM"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Exys Products"
+	depends on DEFAULTS_EXYS
+	default DEFAULTS_EXYS_DE2
+
+config DEFAULTS_EXYS_DE2
+	bool "de2"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Feith Products"
+	depends on DEFAULTS_FEITH
+	default DEFAULTS_FEITH_CANCAM
+
+config DEFAULTS_FEITH_CANCAM
+	bool "CANCam"
+
+config DEFAULTS_FEITH_CLEOPATRA
+	bool "Cleopatra"
+
+config DEFAULTS_FEITH_CLEOPATRA2
+	bool "Cleopatra2"
+
+config DEFAULTS_FEITH_SCALES
+	bool "SCALES"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "FireBee Products"
+	depends on DEFAULTS_FIREBEE
+	default DEFAULTS_FIREBEE_FIREBEE1
+
+config DEFAULTS_FIREBEE_FIREBEE1
+	bool "FireBee1"
+
+config DEFAULTS_FIREBEE_FIREBEE1_MMU
+	bool "FireBee1-MMU"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Freescale Products"
+	depends on DEFAULTS_FREESCALE
+	default DEFAULTS_FREESCALE_IMX50EVK
+
+config DEFAULTS_FREESCALE_IMX50EVK
+	bool "IMX50EVK"
+
+config DEFAULTS_FREESCALE_IMX6ULTRALITE
+	bool "IMX6UltraLite"
+
+config DEFAULTS_FREESCALE_M5206EC3
+	bool "M5206eC3"
+
+config DEFAULTS_FREESCALE_M5206ELITE
+	bool "M5206eLITE"
+
+config DEFAULTS_FREESCALE_M5208EVB
+	bool "M5208EVB"
+
+config DEFAULTS_FREESCALE_M5235EVB
+	bool "M5235EVB"
+
+config DEFAULTS_FREESCALE_M5249C3
+	bool "M5249C3"
+
+config DEFAULTS_FREESCALE_M5271EVB
+	bool "M5271EVB"
+
+config DEFAULTS_FREESCALE_M5272C3
+	bool "M5272C3"
+
+config DEFAULTS_FREESCALE_M5275EVB
+	bool "M5275EVB"
+
+config DEFAULTS_FREESCALE_M5282EVB
+	bool "M5282EVB"
+
+config DEFAULTS_FREESCALE_M5282LITE
+	bool "M5282LITE"
+
+config DEFAULTS_FREESCALE_M5307C3
+	bool "M5307C3"
+
+config DEFAULTS_FREESCALE_M5329EVB
+	bool "M5329EVB"
+
+config DEFAULTS_FREESCALE_M5407C3
+	bool "M5407C3"
+
+config DEFAULTS_FREESCALE_M54411EVB
+	bool "M54411EVB"
+
+config DEFAULTS_FREESCALE_M5475EVB
+	bool "M5475EVB"
+
+config DEFAULTS_FREESCALE_M5475EVB_MMU
+	bool "M5475EVB-MMU"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Globalscale Products"
+	depends on DEFAULTS_GLOBALSCALE
+	default DEFAULTS_GLOBALSCALE_MIRABOX
+
+config DEFAULTS_GLOBALSCALE_MIRABOX
+	bool "MiraBox"
+
+config DEFAULTS_GLOBALSCALE_PRIMABOX
+	bool "PrimaBox"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Intec Products"
+	depends on DEFAULTS_INTEC
+	default DEFAULTS_INTEC_WILDFIRE
+
+config DEFAULTS_INTEC_WILDFIRE
+	bool "WildFire"
+
+config DEFAULTS_INTEC_WILDFIREMOD
+	bool "WildFireMod"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Intel Products"
+	depends on DEFAULTS_INTEL
+	default DEFAULTS_INTEL_IXDP425
+
+config DEFAULTS_INTEL_IXDP425
+	bool "IXDP425"
+
+config DEFAULTS_INTEL_IXDP465
+	bool "IXDP465"
+
+config DEFAULTS_INTEL_IXDPG425
+	bool "IXDPG425"
+
+config DEFAULTS_INTEL_MINNOWBOARD
+	bool "MinnowBoard"
+
+config DEFAULTS_INTEL_MONTEJADE
+	bool "MonteJade"
+
+config DEFAULTS_INTEL_TOLAPAI_EP80579
+	bool "Tolapai-EP80579"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "McAfee Products"
+	depends on DEFAULTS_MCAFEE
+	default DEFAULTS_MCAFEE_SG310
+
+config DEFAULTS_MCAFEE_SG310
+	bool "SG310"
+
+config DEFAULTS_MCAFEE_SG560
+	bool "SG560"
+
+config DEFAULTS_MCAFEE_SG560D
+	bool "SG560D"
+
+config DEFAULTS_MCAFEE_SG560U
+	bool "SG560U"
+
+config DEFAULTS_MCAFEE_SG560U_RECOVER
+	bool "SG560U-Recover"
+
+config DEFAULTS_MCAFEE_SG565
+	bool "SG565"
+
+config DEFAULTS_MCAFEE_SG580
+	bool "SG580"
+
+config DEFAULTS_MCAFEE_SG590
+	bool "SG590"
+
+config DEFAULTS_MCAFEE_SG640
+	bool "SG640"
+
+config DEFAULTS_MCAFEE_SG720
+	bool "SG720"
+
+config DEFAULTS_MCAFEE_SG770
+	bool "SG770"
+
+config DEFAULTS_MCAFEE_SG8100
+	bool "SG8100"
+
+config DEFAULTS_MCAFEE_SG8200
+	bool "SG8200"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Micrel Products"
+	depends on DEFAULTS_MICREL
+	default DEFAULTS_MICREL_KS8695
+
+config DEFAULTS_MICREL_KS8695
+	bool "KS8695"
+
+config DEFAULTS_MICREL_KSZ9692
+	bool "KSZ9692"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Netburner Products"
+	depends on DEFAULTS_NETBURNER
+	default DEFAULTS_NETBURNER_MOD5272
+
+config DEFAULTS_NETBURNER_MOD5272
+	bool "MOD5272"
+
+config DEFAULTS_NETBURNER_MOD5282
+	bool "MOD5282"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "OpenGear Products"
+	depends on DEFAULTS_OPENGEAR
+	default DEFAULTS_OPENGEAR_ACM500X
+
+config DEFAULTS_OPENGEAR_ACM500X
+	bool "ACM500x"
+
+config DEFAULTS_OPENGEAR_CM4008
+	bool "CM4008"
+
+config DEFAULTS_OPENGEAR_CM41XX
+	bool "CM41xx"
+
+config DEFAULTS_OPENGEAR_IM4004
+	bool "IM4004"
+
+config DEFAULTS_OPENGEAR_IM42XX
+	bool "IM42xx"
+
+config DEFAULTS_OPENGEAR_SD4002
+	bool "SD4002"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "SecureComputing Products"
+	depends on DEFAULTS_SECURECOMPUTING
+	default DEFAULTS_SECURECOMPUTING_SE5000
+
+config DEFAULTS_SECURECOMPUTING_SE5000
+	bool "SE5000"
+
+config DEFAULTS_SECURECOMPUTING_SE5100
+	bool "SE5100"
+
+config DEFAULTS_SECURECOMPUTING_SE5100_FLASH
+	bool "SE5100-Flash"
+
+config DEFAULTS_SECURECOMPUTING_SG310
+	bool "SG310"
+
+config DEFAULTS_SECURECOMPUTING_SG550
+	bool "SG550"
+
+config DEFAULTS_SECURECOMPUTING_SG560
+	bool "SG560"
+
+config DEFAULTS_SECURECOMPUTING_SG560D
+	bool "SG560D"
+
+config DEFAULTS_SECURECOMPUTING_SG560U
+	bool "SG560U"
+
+config DEFAULTS_SECURECOMPUTING_SG565
+	bool "SG565"
+
+config DEFAULTS_SECURECOMPUTING_SG570
+	bool "SG570"
+
+config DEFAULTS_SECURECOMPUTING_SG575
+	bool "SG575"
+
+config DEFAULTS_SECURECOMPUTING_SG580
+	bool "SG580"
+
+config DEFAULTS_SECURECOMPUTING_SG590
+	bool "SG590"
+
+config DEFAULTS_SECURECOMPUTING_SG630
+	bool "SG630"
+
+config DEFAULTS_SECURECOMPUTING_SG635
+	bool "SG635"
+
+config DEFAULTS_SECURECOMPUTING_SG640
+	bool "SG640"
+
+config DEFAULTS_SECURECOMPUTING_SG710
+	bool "SG710"
+
+config DEFAULTS_SECURECOMPUTING_SG720
+	bool "SG720"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "senTec Products"
+	depends on DEFAULTS_SENTEC
+	default DEFAULTS_SENTEC_COBRA5272
+
+config DEFAULTS_SENTEC_COBRA5272
+	bool "COBRA5272"
+
+config DEFAULTS_SENTEC_COBRA5282
+	bool "COBRA5282"
+
+config DEFAULTS_SENTEC_COBRA5329
+	bool "COBRA5329"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Serra Products"
+	depends on DEFAULTS_SERRA
+	default DEFAULTS_SERRA_MFC3000
+
+config DEFAULTS_SERRA_MFC3000
+	bool "MFC3000"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Signal Products"
+	depends on DEFAULTS_SIGNAL
+	default DEFAULTS_SIGNAL_MCP751
+
+config DEFAULTS_SIGNAL_MCP751
+	bool "MCP751"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "SNEHA Products"
+	depends on DEFAULTS_SNEHA
+	default DEFAULTS_SNEHA_CPU16B
+
+config DEFAULTS_SNEHA_CPU16B
+	bool "CPU16B"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "Soekris Products"
+	depends on DEFAULTS_SOEKRIS
+	default DEFAULTS_SOEKRIS_NET4801
+
+config DEFAULTS_SOEKRIS_NET4801
+	bool "net4801"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "TI Products"
+	depends on DEFAULTS_TI
+	default DEFAULTS_TI_BEAGLEBONEBLACK
+
+config DEFAULTS_TI_BEAGLEBONEBLACK
+	bool "BeagleBoneBLACK"
+
+endchoice
+
+##############################################################
+
+choice
+	prompt "YDdraig Products"
+	depends on DEFAULTS_YDDRAIG
+	default DEFAULTS_YDDRAIG_DDRAIG68K
+
+config DEFAULTS_YDDRAIG_DDRAIG68K
+	bool "ddraig68k"
+
+endchoice
+
+endmenu
+
+config PRODUCT
+	string
+
+##############################################################
+
+menu "Kernel/Library/Defaults Selection"
+
+comment "Kernel is linux"
+
+config DEFAULTS_KERNEL_LINUX
+	bool
+	default y
+
+config LINUXDIR
+	string
+
+choice
+	prompt "Libc Version"
+	default DEFAULTS_LIBC_UCLIBC
+
+config DEFAULTS_LIBC_UCLIBC
+	bool "uClibc"
+
+config DEFAULTS_LIBC_UCLIBC_NG
+	bool "uClibc-ng"
+
+config DEFAULTS_LIBC_GLIBC
+	bool "glibc"
+
+config DEFAULTS_LIBC_MUSL
+	bool "musl"
+
+config DEFAULTS_LIBC_NONE
+	bool "None"
+
+endchoice
+
+config LIBCDIR
+	string
+
+config DEFAULTS_OVERRIDE
+	bool "Default all settings (lose changes)"
+
+config DEFAULTS_KERNEL
+	bool "Customize Kernel Settings"
+
+config DEFAULTS_VENDOR
+	bool "Customize Application/Library Settings"
+
+config DEFAULTS_VENDOR_UPDATE
+	bool "Update Default Vendor Settings"
+
+endmenu
+

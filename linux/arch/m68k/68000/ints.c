@@ -76,6 +76,7 @@ asmlinkage irqreturn_t inthandler7(void);
  */
 void process_int(int vec, struct pt_regs *fp)
 {
+	/*
 	int irq;
 	int mask;
 
@@ -128,16 +129,17 @@ void process_int(int vec, struct pt_regs *fp)
 		do_IRQ(irq, fp);
 		pend &= ~mask;
 	}
+	*/
 }
 
 static void intc_irq_unmask(struct irq_data *d)
 {
-	IMR &= ~(1 << d->irq);
+	//IMR &= ~(1 << d->irq);
 }
 
 static void intc_irq_mask(struct irq_data *d)
 {
-	IMR |= (1 << d->irq);
+	//IMR |= (1 << d->irq);
 }
 
 static struct irq_chip intc_irq_chip = {
@@ -152,9 +154,10 @@ static struct irq_chip intc_irq_chip = {
  */
 void __init trap_init(void)
 {
-	int i;
+	//int i;
 
 	/* set up the vectors */
+	/*
 	for (i = 72; i < 256; ++i)
 		_ramvec[i] = (e_vector) bad_interrupt;
 
@@ -167,20 +170,21 @@ void __init trap_init(void)
 	_ramvec[69] = (e_vector) inthandler5;
 	_ramvec[70] = (e_vector) inthandler6;
 	_ramvec[71] = (e_vector) inthandler7;
+	*/
 }
 
 void __init init_IRQ(void)
 {
-	int i;
+	// int i;
 
-	IVR = 0x40; /* Set DragonBall IVR (interrupt base) to 64 */
+	// IVR = 0x40; /* Set DragonBall IVR (interrupt base) to 64 */
 
-	/* turn off all interrupts */
-	IMR = ~0;
+	// /* turn off all interrupts */
+	// IMR = ~0;
 
-	for (i = 0; (i < NR_IRQS); i++) {
-		irq_set_chip(i, &intc_irq_chip);
-		irq_set_handler(i, handle_level_irq);
-	}
+	// for (i = 0; (i < NR_IRQS); i++) {
+	// 	irq_set_chip(i, &intc_irq_chip);
+	// 	irq_set_handler(i, handle_level_irq);
+	// }
 }
 
