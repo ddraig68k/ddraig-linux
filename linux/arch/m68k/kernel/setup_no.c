@@ -160,9 +160,7 @@ void __init setup_arch(char **cmdline_p)
 	init_mm.end_data = (unsigned long) &_edata;
 	init_mm.brk = (unsigned long) 0;
 
-// #ifndef CONFIG_DDRAIG68K
-// 	config_BSP(&command_line[0], sizeof(command_line));
-// #endif 
+ 	//config_BSP(&command_line[0], sizeof(command_line));
 
 #if defined(CONFIG_BOOTPARAM)
 	strncpy(&command_line[0], CONFIG_BOOTPARAM_STRING, sizeof(command_line));

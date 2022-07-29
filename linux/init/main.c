@@ -485,12 +485,19 @@ static void __init mm_init(void)
 	 * page_ext requires contiguous pages,
 	 * bigger than MAX_ORDER unless SPARSEMEM.
 	 */
+	printk("page ext");
 	page_ext_init_flatmem();
+	printk("mem init");
 	mem_init();
+	printk("kmem cache");
 	kmem_cache_init();
+	printk("percpu init late");
 	percpu_init_late();
+	printk("pgtable init");
 	pgtable_init();
+	printk("vmalloc init");
 	vmalloc_init();
+	printk("ioremapt huge init");
 	ioremap_huge_init();
 }
 
@@ -556,7 +563,12 @@ asmlinkage __visible void __init start_kernel(void)
 	vfs_caches_init_early();
 	sort_main_extable();
 	trap_init();
+
+	printk("START MM_INIT\r\n");
+
 	mm_init();
+
+	printk("END MM_INIT\r\n");
 
 	/*
 	 * Set up the scheduler prior starting any interrupts (such as the
