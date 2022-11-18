@@ -7,8 +7,8 @@ CONSOLE_BAUD_RATE = 37600
 
 ############################################################################
 
-CPUFLAGS      = -m68000 -D__ELF__ -D__linux__
-VENDOR_CFLAGS = -DCONFIG_LINEO
+CPUFLAGS      = -m68000 -D__ELF__ -D__linux__ -DCONFIG_DDRAIG68K
+VENDOR_CFLAGS = -DCONFIG_LINEO 
 DISABLE_XIP := 1             # XIP works fine
 DISABLE_MOVE_RODATA := 1     # move-rodata is fine
 DISABLE_SHARED_LIBS := 1     # shared libs are fine
