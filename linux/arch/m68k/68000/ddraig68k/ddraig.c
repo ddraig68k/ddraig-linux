@@ -11,7 +11,7 @@ void ddraig_putc(char c)
     // Always print a carriage return after a line feed
     if (c == 0x0A)
     {
-        duart_putc(0x0D);
+        ddraig_putc(0x0D);
     }
 }
 
