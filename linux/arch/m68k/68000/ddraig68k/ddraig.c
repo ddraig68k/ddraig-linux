@@ -1,6 +1,6 @@
-#include <asm/herring.h>
+#include "ddraig68k.h"
 
-void duart_putc(char c)
+void ddraig_putc(char c)
 {
     while ((MEM(DUART_SRB) & 0b00000100) == 0)
     {
@@ -15,7 +15,7 @@ void duart_putc(char c)
     }
 }
 
-char duart_getc(void)
+char ddraig_getc(void)
 {
     while ((MEM(DUART_SRB) & 0b00000001) == 0)
     {

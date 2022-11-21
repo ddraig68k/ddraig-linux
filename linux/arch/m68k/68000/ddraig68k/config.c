@@ -12,8 +12,8 @@
 #include <linux/signal.h>
 #include <linux/ptrace.h>
 #include <linux/console.h>
-#include <asm/herring.h>
 #include <asm/irq.h>
+#include "ddraig68k.h"
 
 static u32 ddraig_tick_count;
 static irq_handler_t timer_interrupt;
@@ -24,7 +24,7 @@ static void ddraig_console_write(struct console *co, const char *str, unsigned i
 
 	while (str[i] != 0 && i < count)
 	{
-		duart_putc(str[i]);
+		ddraig_putc(str[i]);
 		i++;
 	}
 }
@@ -75,7 +75,7 @@ static struct clocksource ddraig_clk = {
 
 void ddraig_sched_init(irq_handler_t handler)
 {
-	setup_irq(1, ddraig_timer_irq);
+	setup_irq(1, &ddraig_timer_irq);
 
 	// Setup DUART timer as 50 Hz interrupt
 	MEM(DUART_IVR) = 0x40;		 // Interrupt base register

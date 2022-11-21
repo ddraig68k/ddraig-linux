@@ -204,8 +204,8 @@ _copy_initmem:
 /*
 #if defined(CONFIG_ROMFS_FS) && defined(CONFIG_RAMKERNEL) && \
     defined(CONFIG_MTD_UCLINUX)
-/*
-#if SECTION_REMOVED
+*/
+#if defined(SECTION_REMOVED)
 	lea	__bss_start, %a0		/* get start of bss */
 	lea	__bss_stop, %a1			/* set up destination  */
 	movel	%a0, %a2			/* copy of bss start */
