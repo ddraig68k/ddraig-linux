@@ -1,5 +1,5 @@
-menuconfig HERRING
-	bool "Herring-8 board support."
+menuconfig DDRAIG68K
+	bool "Y Ddraig 68000 support"
 	depends on M68000
 	help
-	  Support for the Herring-8 68k board.
+	  Support for the Y Ddraig 68000 computer.
