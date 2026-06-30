@@ -3406,6 +3406,8 @@ void __init vfs_caches_init(void)
 	files_init();
 	files_maxfiles_init();
 	mnt_init();
+	pr_info("BOOT: bdev_cache_init\n");
 	bdev_cache_init();
+	pr_info("BOOT: chrdev_init\n");
 	chrdev_init();
 }

@@ -76,6 +76,7 @@ config HZ
 	default 1000 if CLEOPATRA
 	default 50 if MACKEREL08
 	default 25 if MACKERELF
+	default 12 if DDRAIG68K
 	default 100
 
 config PGTABLE_LEVELS

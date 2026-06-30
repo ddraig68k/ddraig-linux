@@ -8,14 +8,15 @@ BOARD="${1:-30}"
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
 case "$BOARD" in
-    30) SYSTEM="m68k-mackerel-linux-musl"    ; DEFCONFIG="mackerel30_defconfig" ;;
-    10) SYSTEM="m68k-mackerel-uclinux-uclibc"; DEFCONFIG="mackerel10_defconfig" ;;
-    08) SYSTEM="m68k-mackerel-uclinux-uclibc"; DEFCONFIG="mackerel08_defconfig" ;;
-    f|F)  SYSTEM="m68k-mackerel-uclinux-uclibc"; DEFCONFIG="mackerelf_defconfig" ;;
-    *)  echo "Usage: $0 [board]   (board: 30, 10, 08, or f; default 30)"; exit 1 ;;
+    30)       SYSTEM="m68k-mackerel-linux-musl"    ; TOOLPATH="$HOME/x-tools/$SYSTEM/bin"; DEFCONFIG="mackerel30_defconfig" ;;
+    10)       SYSTEM="m68k-mackerel-uclinux-uclibc"; TOOLPATH="$HOME/x-tools/$SYSTEM/bin"; DEFCONFIG="mackerel10_defconfig" ;;
+    08)       SYSTEM="m68k-mackerel-uclinux-uclibc"; TOOLPATH="$HOME/x-tools/$SYSTEM/bin"; DEFCONFIG="mackerel08_defconfig" ;;
+    f|F)      SYSTEM="m68k-mackerel-uclinux-uclibc"; TOOLPATH="$HOME/x-tools/$SYSTEM/bin"; DEFCONFIG="mackerelf_defconfig"  ;;
+    d|ddraig) SYSTEM="m68k-mackerel-uclinux-uclibc"; TOOLPATH="$HOME/x-tools/$SYSTEM/bin"; DEFCONFIG="ddraig68k_defconfig"  ;;
+    *)  echo "Usage: $0 [board]   (board: 30, 10, 08, f, or d; default 30)"; exit 1 ;;
 esac
 
-export PATH=$PATH:$HOME/x-tools/"$SYSTEM"/bin
+export PATH=$PATH:"$TOOLPATH"
 CROSS="$SYSTEM-"
 
 # Concatenate ROMfs to the end of the kernel image (Mackerel-08)

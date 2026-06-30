@@ -19,5 +19,6 @@ obj-$(CONFIG_UCDIMM)	+= ucsimm.o
 obj-$(CONFIG_MACKEREL10)	+= entry.o mackerel/
 obj-$(CONFIG_MACKEREL08)	+= entry.o mackerel/
 obj-$(CONFIG_MACKERELF)	+= entry.o mackerel-f/
+obj-$(CONFIG_DDRAIG68K)	+= entry.o ddraig68k/
 
 obj-y			+= head.o

@@ -9,16 +9,17 @@ BUSYBOX_URL="https://busybox.net/downloads/busybox-${BUSYBOX_VERSION}.tar.bz2"
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
 case "$BOARD" in
-    30) SYSTEM=m68k-mackerel-linux-musl     ; LINK=dynamic ; OUT="$SCRIPT_DIR/busybox" ;;
-    10) SYSTEM=m68k-mackerel-uclinux-uclibc ; LINK=bflt    ; OUT="$SCRIPT_DIR/busybox_nommu" ;;
-    08) SYSTEM=m68k-mackerel-uclinux-uclibc ; LINK=bflt    ; OUT="$SCRIPT_DIR/busybox_mackerel08" ;;
-    f|F)  SYSTEM=m68k-mackerel-uclinux-uclibc ; LINK=bflt    ; OUT="$SCRIPT_DIR/busybox_mackerelf" ;;
-    *)  echo "Usage: $0 [board]   (board: 30, 10, 08, or F; default 30)"; exit 1 ;;
+    30)       SYSTEM=m68k-mackerel-linux-musl     ; LINK=dynamic ; OUT="$SCRIPT_DIR/busybox"           ; DEFCONFIG="mackerel30_defconfig"  ;;
+    10)       SYSTEM=m68k-mackerel-uclinux-uclibc ; LINK=bflt    ; OUT="$SCRIPT_DIR/busybox_nommu"     ; DEFCONFIG="mackerel10_defconfig"  ;;
+    08)       SYSTEM=m68k-mackerel-uclinux-uclibc ; LINK=bflt    ; OUT="$SCRIPT_DIR/busybox_mackerel08"; DEFCONFIG="mackerel08_defconfig"  ;;
+    f|F)      SYSTEM=m68k-mackerel-uclinux-uclibc ; LINK=bflt    ; OUT="$SCRIPT_DIR/busybox_mackerelf" ; DEFCONFIG="mackerelf_defconfig"   ;;
+    d|ddraig) SYSTEM=m68k-mackerel-uclinux-uclibc ; LINK=bflt    ; OUT="$SCRIPT_DIR/busybox_ddraig68k" ; DEFCONFIG="ddraig68k_defconfig"   ;;
+    *)  echo "Usage: $0 [board]   (board: 30, 10, 08, f, or d; default 30)"; exit 1 ;;
 esac
 
 export PATH=$PATH:$HOME/x-tools/"$SYSTEM"/bin
 CROSS="$SYSTEM-"
-DEFCONFIG="$SCRIPT_DIR/busybox_configs/mackerel${BOARD}_defconfig"
+DEFCONFIG="$SCRIPT_DIR/busybox_configs/$DEFCONFIG"
 BUILD_DIR="$SCRIPT_DIR/.busybox-${BOARD}-build"
 
 if [ ! -f "$DEFCONFIG" ]; then
@@ -42,9 +43,10 @@ echo "Preparing build directory..."
 rm -rf "$BUILD_DIR"; mkdir -p "$BUILD_DIR"; cd "$BUILD_DIR"
 cp "$CACHE_DIR/$TARBALL" .; tar xf "$TARBALL"; cd "busybox-${BUSYBOX_VERSION}"
 
-echo "Applying mackerel${BOARD}_defconfig..."
-cp "$DEFCONFIG" "configs/mackerel${BOARD}_defconfig"
-make ARCH=m68k CROSS_COMPILE="$CROSS" "mackerel${BOARD}_defconfig"
+CONFIG_NAME="$(basename "$DEFCONFIG")"
+echo "Applying ${CONFIG_NAME}..."
+cp "$DEFCONFIG" "configs/${CONFIG_NAME}"
+make ARCH=m68k CROSS_COMPILE="$CROSS" "${CONFIG_NAME}"
 
 if [ "$LINK" = "dynamic" ]; then
     echo "Building..."

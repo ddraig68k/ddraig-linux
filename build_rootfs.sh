@@ -8,11 +8,12 @@ BOARD="${1:-30}"
 SCRIPT_DIR="$(dirname "$(readlink -f "$0")")"
 
 case "$BOARD" in
-    30) BUSYBOX="$SCRIPT_DIR/busybox"            ; STAGE="$SCRIPT_DIR/rootfs_mackerel30" ;;
-    10) BUSYBOX="$SCRIPT_DIR/busybox_nommu"      ; STAGE="$SCRIPT_DIR/initramfs"         ;;
-    08) BUSYBOX="$SCRIPT_DIR/busybox_mackerel08" ; STAGE="$SCRIPT_DIR/romfs_mackerel08"  ;;
-    f|F)  BUSYBOX="$SCRIPT_DIR/busybox_mackerelf"  ; STAGE="$SCRIPT_DIR/romfs_mackerelf"   ;;
-    *)  echo "Usage: $0 [board]   (board: 30, 10, 08, or F; default 30)"; exit 1 ;;
+    30)       BUSYBOX="$SCRIPT_DIR/busybox"            ; STAGE="$SCRIPT_DIR/rootfs_mackerel30" ;;
+    10)       BUSYBOX="$SCRIPT_DIR/busybox_nommu"      ; STAGE="$SCRIPT_DIR/initramfs"         ;;
+    08)       BUSYBOX="$SCRIPT_DIR/busybox_mackerel08" ; STAGE="$SCRIPT_DIR/romfs_mackerel08"  ;;
+    f|F)      BUSYBOX="$SCRIPT_DIR/busybox_mackerelf"  ; STAGE="$SCRIPT_DIR/romfs_mackerelf"   ;;
+    d|ddraig) BUSYBOX="$SCRIPT_DIR/busybox_ddraig68k"  ; STAGE="$SCRIPT_DIR/initramfs"         ;;
+    *)  echo "Usage: $0 [board]   (board: 30, 10, 08, f, or d; default 30)"; exit 1 ;;
 esac
 
 if [ ! -f "$BUSYBOX" ]; then
@@ -567,9 +568,121 @@ CGIEOF
     echo "Copy $OUT to the SD card's FAT16 partition as romf.bin."
 }
 
+# Y Ddraig — initramfs, same structure as Mackerel-10
+build_rootfs_d() {
+    local LIST_FILE="$SCRIPT_DIR/initramfs.list"
+
+    echo "Creating Y Ddraig initramfs staging directory at $STAGE..."
+    rm -rf "$STAGE"
+    mkdir -p "$STAGE"/{bin,sbin,etc,proc,sys,dev,tmp,root}
+
+    echo "Installing busybox..."
+    cp "$BUSYBOX" "$STAGE/bin/busybox"
+    chmod 755 "$STAGE/bin/busybox"
+
+    echo "Creating busybox symlinks..."
+    for cmd in \
+        sh hush \
+        echo cat ls mkdir rm cp mv ln touch pwd \
+        sleep ps kill killall \
+        mount umount \
+        hostname uname env \
+        dmesg \
+        grep sed cut tr wc head tail sort uniq \
+        find xargs \
+        expr test printf date \
+        free df stat readlink basename dirname \
+        dd clear reset \
+        ; do
+        ln -sf busybox "$STAGE/bin/$cmd"
+    done
+    ln -sf ../bin/busybox "$STAGE/sbin/init"
+
+    echo "Writing /etc/inittab..."
+    cat > "$STAGE/etc/inittab" <<'EOF'
+::sysinit:/bin/mount -t devtmpfs dev /dev
+::sysinit:/bin/mount -t proc proc /proc
+::sysinit:/bin/mount -t sysfs sysfs /sys
+::sysinit:/bin/hostname y-ddraig
+::respawn:-/bin/sh
+::restart:/sbin/init
+::ctrlaltdel:/bin/reboot
+EOF
+
+    echo "Writing /etc/passwd..."
+    echo "root::0:0:root:/root:/bin/sh" > "$STAGE/etc/passwd"
+
+    echo "Writing /etc/profile..."
+    cat > "$STAGE/etc/profile" <<'EOF'
+export HOME=/root
+export PATH=/bin:/sbin
+export PS1='\u@y-ddraig:\w\$ '
+cd "$HOME"
+EOF
+
+    echo "Generating initramfs.list..."
+    cat > "$LIST_FILE" <<EOF
+# Y Ddraig initramfs
+
+dir  /proc          0755 0 0
+dir  /sys           0755 0 0
+dir  /dev           0755 0 0
+dir  /bin           0755 0 0
+dir  /sbin          0755 0 0
+dir  /etc           0755 0 0
+dir  /tmp           0777 0 0
+dir  /root          0700 0 0
+
+nod  /dev/console   0600 0 0 c 5 1
+
+file /bin/busybox   ${STAGE}/bin/busybox 0755 0 0
+
+slink /init              /bin/busybox 0755 0 0
+slink /sbin/init         /bin/busybox 0755 0 0
+slink /bin/sh            busybox 0755 0 0
+slink /bin/hush          busybox 0755 0 0
+slink /bin/echo          busybox 0755 0 0
+slink /bin/cat           busybox 0755 0 0
+slink /bin/ls            busybox 0755 0 0
+slink /bin/mkdir         busybox 0755 0 0
+slink /bin/rm            busybox 0755 0 0
+slink /bin/cp            busybox 0755 0 0
+slink /bin/mv            busybox 0755 0 0
+slink /bin/ln            busybox 0755 0 0
+slink /bin/touch         busybox 0755 0 0
+slink /bin/pwd           busybox 0755 0 0
+slink /bin/sleep         busybox 0755 0 0
+slink /bin/ps            busybox 0755 0 0
+slink /bin/kill          busybox 0755 0 0
+slink /bin/killall       busybox 0755 0 0
+slink /bin/mount         busybox 0755 0 0
+slink /bin/umount        busybox 0755 0 0
+slink /bin/hostname      busybox 0755 0 0
+slink /bin/uname         busybox 0755 0 0
+slink /bin/dmesg         busybox 0755 0 0
+slink /bin/grep          busybox 0755 0 0
+slink /bin/sed           busybox 0755 0 0
+slink /bin/find          busybox 0755 0 0
+slink /bin/date          busybox 0755 0 0
+slink /bin/free          busybox 0755 0 0
+slink /bin/df            busybox 0755 0 0
+slink /bin/env           busybox 0755 0 0
+slink /bin/dd            busybox 0755 0 0
+slink /bin/clear         busybox 0755 0 0
+slink /bin/reset         busybox 0755 0 0
+
+file /etc/inittab        ${STAGE}/etc/inittab  0644 0 0
+file /etc/passwd         ${STAGE}/etc/passwd   0644 0 0
+file /etc/profile        ${STAGE}/etc/profile  0644 0 0
+EOF
+
+    echo "Done!"
+}
+
 if [ "$BOARD" = "f" ] || [ "$BOARD" = "F" ]; then
     build_rootfs_f
+elif [ "$BOARD" = "d" ] || [ "$BOARD" = "ddraig" ]; then
+    build_rootfs_d
 else
-    # Otherwise, just call the rootfs generator for the specified board
     build_rootfs_"${BOARD}"
 fi

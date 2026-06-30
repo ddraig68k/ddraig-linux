@@ -8130,11 +8130,10 @@ void __init workqueue_init(void)
 			pool->node = cpu_to_node(cpu);
 	}
 
-	list_for_each_entry(wq, &workqueues, list) {
+	list_for_each_entry(wq, &workqueues, list)
 		WARN(init_rescuer(wq),
 		     "workqueue: failed to create early rescuer for %s",
 		     wq->name);
-	}
 
 	mutex_unlock(&wq_pool_mutex);
 

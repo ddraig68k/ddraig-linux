@@ -24,6 +24,11 @@ config MACKERELF
 	depends on M68000
 	select LEGACY_TIMER_TICK
 
+config DDRAIG68K
+	bool "Y Ddraig (ddraig68k)"
+	depends on M68000
+	select LEGACY_TIMER_TICK
+
 config AMIGA
 	bool "Amiga support"
 	depends on MMU

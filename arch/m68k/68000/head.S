@@ -77,6 +77,17 @@ _start:
 
 	movew	#0x2700, %sr			/* disable all interrupts */
 
+#ifdef CONFIG_DDRAIG68K
+	/* Output '!' on DUART channel A before any C code runs.
+	 * If this appears, execution reached _start. Remove after bring-up. */
+	moveal	#0xF7F002, %a0		/* DUART1_SRA (TxRDY = bit 2) */
+	moveal	#0xF7F006, %a1		/* DUART1_TBA */
+1:	moveb	(%a0), %d0
+	btst	#2, %d0
+	beq	1b
+	moveb	#0x21, (%a1)		/* '!' */
+#endif
+
 /*****************************************************************************
  * Setup PLL and wait for it to settle (in 68x328 cpu's).
  * Also, if enabled, init serial port.

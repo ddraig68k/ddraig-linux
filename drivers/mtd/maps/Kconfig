@@ -379,4 +379,11 @@ config MTD_MACKERELF
 	help
 	  Maps the Mackerel-F XIP ROMfs region at 0x700000 as an MTD device.
 
+config MTD_DDRAIG68K
+	tristate "Y Ddraig ROM map"
+	depends on MTD_ROM
+	help
+	  Maps the Y Ddraig ROM window (0xF80000, 512 KB) as an MTD device.
+	  Enable this to mount a ROMfs image placed in the board's ROM.
+
 endmenu

@@ -338,13 +338,30 @@ static void xr_console_putchar(struct uart_port *port, unsigned char c)
 
 static void xr_console_write(struct console *co, const char *s, unsigned int count)
 {
-	uart_console_write(&xr_ports[0].port, s, count, xr_console_putchar);
+	struct xr_port *xp = &xr_ports[0];
+	unsigned long flags;
+	u8 saved_imr;
+
+	local_irq_save(flags);
+
+	/* Disable TX interrupt during polling write to avoid racing with the ISR
+	 * over the TX holding register. */
+	saved_imr = imr_shadow;
+	imr_shadow &= ~xp->tx_imr_bit;
+	xr_writeb(DUART1_IMR, imr_shadow);
+
+	uart_console_write(&xp->port, s, count, xr_console_putchar);
+
+	imr_shadow = saved_imr;
+	xr_writeb(DUART1_IMR, imr_shadow);
+
+	local_irq_restore(flags);
 }
 
 static int xr_console_setup(struct console *co, char *options)
 {
 	struct uart_port *port;
-	int baud = 115200, parity = 'n', bits = 8, flow = 'n';
+	int baud = DUART_CONSOLE_BAUD, parity = 'n', bits = 8, flow = 'n';
 
 	if (co->index < 0 || co->index >= XR_NR_PORTS)
 		co->index = 0;
@@ -396,29 +413,56 @@ struct uart_driver xr_uart_driver = {
  *   Port B: MR=+0x11, SR/CSR=+0x13, CR=+0x15, RB/TB=+0x17  → ttyXR0 (console)
  *   Port A: MR=+0x01, SR/CSR=+0x03, CR=+0x05, RB/TB=+0x07  → ttyXR1
  */
+/*
+ * Register layout comments show the channel assignment for ttyXR0 (console).
+ * Mackerel-10/08: Channel B = ttyXR0, Channel A = ttyXR1.
+ * Y Ddraig:       Channel A = ttyXR0, Channel B = ttyXR1 (matches DdraigOS wiring).
+ */
 static void xr_init_port(struct xr_port *xp, int index, unsigned long base)
 {
+#ifdef DUART_CONSOLE_IS_CHAN_A
+	/* Console on Channel A */
 	if (index == 0) {
-		/* Port B: ttyXR0 */
-		xp->reg_mr  = base + 0x11;
-		xp->reg_sr  = base + 0x13;
-		xp->reg_csr = base + 0x13;
-		xp->reg_cr  = base + 0x15;
-		xp->reg_rb  = base + 0x17;
-		xp->reg_tb  = base + 0x17;
+		xp->reg_mr  = base + DUART_OFF_MR_A;
+		xp->reg_sr  = base + DUART_OFF_SR_A;
+		xp->reg_csr = base + DUART_OFF_SR_A;
+		xp->reg_cr  = base + DUART_OFF_CR_A;
+		xp->reg_rb  = base + DUART_OFF_RB_A;
+		xp->reg_tb  = base + DUART_OFF_RB_A;
+		xp->tx_imr_bit = XR_ISR_TXRDY_A;
+		xp->rx_imr_bit = XR_ISR_RXRDY_A;
+	} else {
+		xp->reg_mr  = base + DUART_OFF_MR_B;
+		xp->reg_sr  = base + DUART_OFF_SR_B;
+		xp->reg_csr = base + DUART_OFF_SR_B;
+		xp->reg_cr  = base + DUART_OFF_CR_B;
+		xp->reg_rb  = base + DUART_OFF_RB_B;
+		xp->reg_tb  = base + DUART_OFF_RB_B;
+		xp->tx_imr_bit = XR_ISR_TXRDY_B;
+		xp->rx_imr_bit = XR_ISR_RXRDY_B;
+	}
+#else
+	/* Console on Channel B */
+	if (index == 0) {
+		xp->reg_mr  = base + DUART_OFF_MR_B;
+		xp->reg_sr  = base + DUART_OFF_SR_B;
+		xp->reg_csr = base + DUART_OFF_SR_B;
+		xp->reg_cr  = base + DUART_OFF_CR_B;
+		xp->reg_rb  = base + DUART_OFF_RB_B;
+		xp->reg_tb  = base + DUART_OFF_RB_B;
 		xp->tx_imr_bit = XR_ISR_TXRDY_B;
 		xp->rx_imr_bit = XR_ISR_RXRDY_B;
 	} else {
-		/* Port A: ttyXR1 */
-		xp->reg_mr  = base + 0x01;
-		xp->reg_sr  = base + 0x03;
-		xp->reg_csr = base + 0x03;
-		xp->reg_cr  = base + 0x05;
-		xp->reg_rb  = base + 0x07;
-		xp->reg_tb  = base + 0x07;
+		xp->reg_mr  = base + DUART_OFF_MR_A;
+		xp->reg_sr  = base + DUART_OFF_SR_A;
+		xp->reg_csr = base + DUART_OFF_SR_A;
+		xp->reg_cr  = base + DUART_OFF_CR_A;
+		xp->reg_rb  = base + DUART_OFF_RB_A;
+		xp->reg_tb  = base + DUART_OFF_RB_A;
 		xp->tx_imr_bit = XR_ISR_TXRDY_A;
 		xp->rx_imr_bit = XR_ISR_RXRDY_A;
 	}
+#endif
 }
 
 static int xr_probe(struct platform_device *pdev)
@@ -440,7 +484,9 @@ static int xr_probe(struct platform_device *pdev)
 	while (xr_readb(DUART1_SRB) & XR_SR_RXRDY)
 		(void)xr_readb(DUART1_RBB);
 
+#ifndef CONFIG_DDRAIG68K
 	xr_writeb(DUART1_IVR, 0x40 + IRQ_NUM_DUART);
+#endif
 
 	// Request the DUART interrupt as SHARED because Mackerel-08 uses it for the timer as well 
 	ret = request_irq(irq, xr_isr, IRQF_SHARED, XR_NAME, xr_ports);
@@ -478,9 +524,8 @@ static int xr_probe(struct platform_device *pdev)
 		}
 	}
 
-	// Enable port B interrupt so console input works
-	// Note: port A interrupts are enabled when the port is opened
-	imr_shadow |= XR_ISR_RXRDY_B;
+	/* Enable console port (ttyXR0) RX interrupt so input works */
+	imr_shadow |= xr_ports[0].rx_imr_bit;
 	xr_writeb(DUART1_IMR, imr_shadow);
 
 	dev_info(&pdev->dev, "XR68C681 at 0x%llx IRQ %d\n",
@@ -526,9 +571,9 @@ static int __init xr_init(void)
 	 * "exec sh </dev/ttyXR0" relies on.
 	 */
 	xr_uart_driver.tty_driver->init_termios.c_cflag =
-		B115200 | CS8 | CREAD | CLOCAL | HUPCL;
-	xr_uart_driver.tty_driver->init_termios.c_ispeed = 115200;
-	xr_uart_driver.tty_driver->init_termios.c_ospeed = 115200;
+		DUART_CONSOLE_BAUD_CFLAG | CS8 | CREAD | CLOCAL | HUPCL;
+	xr_uart_driver.tty_driver->init_termios.c_ispeed = DUART_CONSOLE_BAUD;
+	xr_uart_driver.tty_driver->init_termios.c_ospeed = DUART_CONSOLE_BAUD;
 
 	ret = platform_driver_register(&xr_plat_driver);
 	if (ret) {
